@@ -5,11 +5,13 @@ import ProgressBar from "../components/ProgressBar";
 import { QUESTIONS, SYLLABUS, questionsForGroup, questionsForSubelement } from "../lib/data";
 import { shuffle } from "../lib/random";
 import { flaggedQuestions, missedQuestions, reviewDeck, unseenQuestions } from "../lib/review";
+import { buildSrsDeck, srsAvailable } from "../lib/srs";
 import { useProgress } from "../lib/useProgress";
 import { pct } from "../lib/stats";
 import type { ProgressState, Question } from "../lib/types";
 
 const DECK_TITLES: Record<string, string> = {
+  srs: "🧠 Smart Review",
   all: "🔀 All questions",
   missed: "❌ Missed questions",
   flagged: "★ Flagged questions",
@@ -23,6 +25,7 @@ function coverage(questions: Question[], state: ProgressState): number {
 }
 
 function buildDeck(group: string, state: ProgressState): Question[] {
+  if (group === "srs") return buildSrsDeck(state);
   if (group === "all") return QUESTIONS;
   if (group === "missed" || group === "flagged" || group === "unseen")
     return reviewDeck(group, state);
@@ -47,6 +50,7 @@ export default function StudyPage() {
     return <StudyDeck questions={deck} title={title} onExit={() => navigate("/study")} />;
   }
 
+  const srsCount = srsAvailable(state);
   const reviewBuckets = [
     { key: "missed", label: "Missed", icon: "❌", count: missedQuestions(state).length },
     { key: "flagged", label: "Flagged", icon: "★", count: flaggedQuestions(state).length },
@@ -64,16 +68,32 @@ export default function StudyPage() {
       </header>
 
       <button
-        onClick={() => navigate("/study/all")}
-        className="flex items-center justify-between rounded-2xl border border-sky-700 bg-sky-500/10 p-5 text-left transition-colors hover:border-sky-500 hover:bg-sky-500/20"
+        onClick={() => navigate("/study/srs")}
+        disabled={srsCount === 0}
+        className="flex items-center justify-between rounded-2xl border border-sky-600 bg-sky-500/15 p-5 text-left transition-colors hover:border-sky-400 hover:bg-sky-500/25 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:border-sky-600"
       >
         <div>
-          <div className="text-lg font-semibold">🔀 Shuffle all questions</div>
+          <div className="text-lg font-semibold">🧠 Smart Review</div>
+          <div className="text-xs text-slate-400">
+            {srsCount > 0
+              ? `${srsCount} card${srsCount === 1 ? "" : "s"} due — spaced repetition`
+              : "All caught up — check back later"}
+          </div>
+        </div>
+        <span className="text-2xl text-sky-400">→</span>
+      </button>
+
+      <button
+        onClick={() => navigate("/study/all")}
+        className="flex items-center justify-between rounded-2xl border border-slate-800 bg-slate-900/50 p-5 text-left transition-colors hover:border-sky-700"
+      >
+        <div>
+          <div className="text-base font-semibold">🔀 Shuffle all questions</div>
           <div className="text-xs text-slate-400">
             Random cards from the entire {QUESTIONS.length}-question pool
           </div>
         </div>
-        <span className="text-2xl text-sky-400">→</span>
+        <span className="text-2xl text-slate-500">→</span>
       </button>
 
       <section>

@@ -2,11 +2,13 @@ import { Link } from "react-router-dom";
 import ProgressBar from "../components/ProgressBar";
 import { useProgress } from "../lib/useProgress";
 import { overallStats, pct } from "../lib/stats";
+import { srsAvailable } from "../lib/srs";
 
 export default function HomePage() {
   const state = useProgress();
   const overall = overallStats(state);
   const lastExam = state.exams[0];
+  const srsCount = srsAvailable(state);
 
   return (
     <div className="flex flex-col gap-6">
@@ -38,6 +40,21 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
+      {srsCount > 0 && (
+        <Link
+          to="/study/srs"
+          className="flex items-center justify-between rounded-2xl border border-sky-600 bg-sky-500/15 p-5 transition-colors hover:border-sky-400 hover:bg-sky-500/25"
+        >
+          <div>
+            <div className="text-lg font-semibold">🧠 Smart Review</div>
+            <div className="text-xs text-slate-400">
+              {srsCount} card{srsCount === 1 ? "" : "s"} due for review
+            </div>
+          </div>
+          <span className="text-2xl text-sky-400">→</span>
+        </Link>
+      )}
 
       <div className="grid grid-cols-2 gap-3">
         <Link

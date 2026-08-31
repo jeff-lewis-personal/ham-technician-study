@@ -55,6 +55,8 @@ localStorage:
         incorrect:    "int   times answered incorrectly"
         flagged:      "bool  user flagged for review"
         lastAnswered: "int | null  epoch ms"
+        box:          "int   Leitner/SRS box (0 = new/lapsed; higher = longer interval)"
+        due:          "int | null  epoch ms when next due for SRS review"
     exams:
       description: "array of completed practice-exam results"
       item:

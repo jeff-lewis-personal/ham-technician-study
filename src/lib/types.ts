@@ -27,6 +27,8 @@ export interface QuestionStat {
   incorrect: number;
   flagged: boolean;
   lastAnswered: number | null;
+  box: number; // Leitner box (0 = new/lapsed; higher = longer interval)
+  due: number | null; // epoch ms when next due for SRS review
 }
 
 export interface ExamResult {

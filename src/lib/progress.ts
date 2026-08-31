@@ -1,3 +1,4 @@
+import { nextSchedule } from "./srs";
 import type { ExamResult, ProgressState, QuestionStat } from "./types";
 
 const STORAGE_KEY = "ham-technician-progress-v1";
@@ -8,6 +9,8 @@ export const EMPTY_STAT: QuestionStat = {
   incorrect: 0,
   flagged: false,
   lastAnswered: null,
+  box: 0,
+  due: null,
 };
 
 /**
@@ -57,7 +60,8 @@ export class LocalProgressStore implements ProgressStore {
   }
 
   private mutateStat(questionId: string, fn: (s: QuestionStat) => QuestionStat) {
-    const current = this.state.questions[questionId] ?? { ...EMPTY_STAT };
+    // merge over EMPTY_STAT so stats stored before new fields existed are migrated
+    const current: QuestionStat = { ...EMPTY_STAT, ...this.state.questions[questionId] };
     this.state = {
       ...this.state,
       questions: { ...this.state.questions, [questionId]: fn({ ...current }) },
@@ -70,13 +74,18 @@ export class LocalProgressStore implements ProgressStore {
   }
 
   recordAnswer(questionId: string, wasCorrect: boolean): void {
-    this.mutateStat(questionId, (s) => ({
-      ...s,
-      seen: s.seen + 1,
-      correct: s.correct + (wasCorrect ? 1 : 0),
-      incorrect: s.incorrect + (wasCorrect ? 0 : 1),
-      lastAnswered: Date.now(),
-    }));
+    this.mutateStat(questionId, (s) => {
+      const sched = nextSchedule(s.box, wasCorrect);
+      return {
+        ...s,
+        seen: s.seen + 1,
+        correct: s.correct + (wasCorrect ? 1 : 0),
+        incorrect: s.incorrect + (wasCorrect ? 0 : 1),
+        lastAnswered: Date.now(),
+        box: sched.box,
+        due: sched.due,
+      };
+    });
   }
 
   toggleFlag(questionId: string): void {

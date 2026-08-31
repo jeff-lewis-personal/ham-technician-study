@@ -4,14 +4,30 @@ import StudyDeck from "../components/StudyDeck";
 import ProgressBar from "../components/ProgressBar";
 import { QUESTIONS, SYLLABUS, questionsForGroup, questionsForSubelement } from "../lib/data";
 import { shuffle } from "../lib/random";
+import { flaggedQuestions, missedQuestions, reviewDeck, unseenQuestions } from "../lib/review";
 import { useProgress } from "../lib/useProgress";
 import { pct } from "../lib/stats";
-import type { Question } from "../lib/types";
+import type { ProgressState, Question } from "../lib/types";
 
-function coverage(questions: Question[], state: ReturnType<typeof useProgress>): number {
+const DECK_TITLES: Record<string, string> = {
+  all: "🔀 All questions",
+  missed: "❌ Missed questions",
+  flagged: "★ Flagged questions",
+  unseen: "🆕 Unseen questions",
+};
+
+function coverage(questions: Question[], state: ProgressState): number {
   if (!questions.length) return 0;
   const seen = questions.filter((q) => (state.questions[q.id]?.seen ?? 0) > 0).length;
   return seen / questions.length;
+}
+
+function buildDeck(group: string, state: ProgressState): Question[] {
+  if (group === "all") return QUESTIONS;
+  if (group === "missed" || group === "flagged" || group === "unseen")
+    return reviewDeck(group, state);
+  if (group.length === 2) return questionsForSubelement(group);
+  return questionsForGroup(group);
 }
 
 export default function StudyPage() {
@@ -19,29 +35,30 @@ export default function StudyPage() {
   const navigate = useNavigate();
   const state = useProgress();
 
-  // shuffle the selected deck; reshuffles whenever the selection changes
-  const deck = useMemo<Question[]>(() => {
-    if (!group) return [];
-    const base =
-      group === "all"
-        ? QUESTIONS
-        : group.length === 2
-          ? questionsForSubelement(group)
-          : questionsForGroup(group);
-    return shuffle(base);
-  }, [group]);
+  // shuffle the selected deck; reshuffles/rebuilds whenever the selection changes
+  const deck = useMemo<Question[]>(
+    () => (group ? shuffle(buildDeck(group, state)) : []),
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- rebuild only on entry, not on every answer
+    [group],
+  );
 
   if (group && deck.length) {
-    const title = group === "all" ? "🔀 All questions" : group;
+    const title = DECK_TITLES[group] ?? group;
     return <StudyDeck questions={deck} title={title} onExit={() => navigate("/study")} />;
   }
+
+  const reviewBuckets = [
+    { key: "missed", label: "Missed", icon: "❌", count: missedQuestions(state).length },
+    { key: "flagged", label: "Flagged", icon: "★", count: flaggedQuestions(state).length },
+    { key: "unseen", label: "Unseen", icon: "🆕", count: unseenQuestions(state).length },
+  ];
 
   return (
     <div className="flex flex-col gap-5">
       <header>
         <h1 className="text-2xl font-bold tracking-tight">Study</h1>
         <p className="text-sm text-slate-400">
-          Shuffle the whole pool, or drill a specific subelement or group. Every deck is
+          Shuffle the whole pool, drill your weak spots, or pick a section. Every deck is
           randomized.
         </p>
       </header>
@@ -52,16 +69,37 @@ export default function StudyPage() {
       >
         <div>
           <div className="text-lg font-semibold">🔀 Shuffle all questions</div>
-          <div className="text-xs text-slate-400">Random cards from the entire {QUESTIONS.length}-question pool</div>
+          <div className="text-xs text-slate-400">
+            Random cards from the entire {QUESTIONS.length}-question pool
+          </div>
         </div>
         <span className="text-2xl text-sky-400">→</span>
       </button>
 
-      <div className="flex flex-col gap-4">
+      <section>
+        <h2 className="mb-2 text-sm font-semibold text-slate-300">Review &amp; drill</h2>
+        <div className="grid grid-cols-3 gap-2">
+          {reviewBuckets.map((b) => (
+            <button
+              key={b.key}
+              onClick={() => navigate(`/study/${b.key}`)}
+              disabled={b.count === 0}
+              className="flex flex-col items-center gap-0.5 rounded-2xl border border-slate-800 bg-slate-900/50 p-4 transition-colors hover:border-sky-700 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:border-slate-800"
+            >
+              <span className="text-xl">{b.icon}</span>
+              <span className="text-lg font-bold">{b.count}</span>
+              <span className="text-xs text-slate-400">{b.label}</span>
+            </button>
+          ))}
+        </div>
+      </section>
+
+      <section className="flex flex-col gap-4">
+        <h2 className="text-sm font-semibold text-slate-300">By section</h2>
         {SYLLABUS.map((sub) => {
           const subQ = questionsForSubelement(sub.code);
           return (
-            <section key={sub.code} className="rounded-2xl border border-slate-800 bg-slate-900/50 p-4">
+            <div key={sub.code} className="rounded-2xl border border-slate-800 bg-slate-900/50 p-4">
               <button
                 onClick={() => navigate(`/study/${sub.code}`)}
                 className="flex w-full items-center justify-between text-left"
@@ -88,10 +126,10 @@ export default function StudyPage() {
                   </button>
                 ))}
               </div>
-            </section>
+            </div>
           );
         })}
-      </div>
+      </section>
     </div>
   );
 }

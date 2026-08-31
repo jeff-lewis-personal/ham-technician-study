@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import StudyDeck from "../components/StudyDeck";
+import AdaptiveDeck from "../components/AdaptiveDeck";
 import ProgressBar from "../components/ProgressBar";
 import { QUESTIONS, SYLLABUS, questionsForGroup, questionsForSubelement } from "../lib/data";
 import { shuffle } from "../lib/random";
@@ -53,6 +54,10 @@ export default function StudyPage() {
     [group],
   );
 
+  if (group === "adaptive") {
+    return <AdaptiveDeck onExit={() => navigate("/study")} />;
+  }
+
   if (group && deck.length) {
     const title = DECK_TITLES[group] ?? group;
     return <StudyDeck questions={deck} title={title} onExit={() => navigate("/study")} />;
@@ -94,13 +99,26 @@ export default function StudyPage() {
       </button>
 
       <button
+        onClick={() => navigate("/study/adaptive")}
+        className="flex items-center justify-between border border-rule bg-card px-[18px] py-4 text-left transition-colors hover:border-brick"
+      >
+        <div className="flex flex-col gap-0.5">
+          <div className="text-[19px] font-medium text-ink">🔁 Adaptive practice</div>
+          <div className="font-mono text-[10px] text-muted">
+            Endless — weighted toward your weak spots
+          </div>
+        </div>
+        <span className="text-[20px] text-brick">→</span>
+      </button>
+
+      <button
         onClick={() => navigate("/study/all")}
         className="flex items-center justify-between border border-rule bg-card px-[18px] py-4 text-left transition-colors hover:border-brick"
       >
         <div className="flex flex-col gap-0.5">
           <div className="text-[19px] font-medium text-ink">🔀 Shuffle all questions</div>
           <div className="font-mono text-[10px] text-muted">
-            Random cards from all {QUESTIONS.length}
+            One pass through all {QUESTIONS.length}
           </div>
         </div>
         <span className="text-[20px] text-brick">→</span>

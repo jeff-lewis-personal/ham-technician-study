@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import QuestionCard from "./QuestionCard";
 import ProgressBar from "./ProgressBar";
 import { progressStore } from "../lib/progress";
@@ -21,20 +21,21 @@ export default function StudyDeck({ questions, title, onExit }: Props) {
   const question = questions[index];
   const stat = state.questions[question.id];
 
-  // count seen for the whole deck for the header progress
+  // mark each card seen as it comes into view
+  useEffect(() => {
+    progressStore.markSeen(question.id);
+  }, [question.id]);
+
   const seenCount = useMemo(
     () => questions.filter((q) => (state.questions[q.id]?.seen ?? 0) > 0).length,
     [questions, state],
   );
 
-  function reveal() {
-    if (revealed) return;
-    if (selected === null) {
-      progressStore.markSeen(question.id);
-    } else {
-      progressStore.recordAnswer(question.id, selected === letterToIndex(question.correct));
-    }
+  function handleSelect(i: number) {
+    if (revealed) return; // lock after first answer
+    setSelected(i);
     setRevealed(true);
+    progressStore.recordAnswer(question.id, i === letterToIndex(question.correct));
   }
 
   function go(delta: number) {
@@ -70,37 +71,28 @@ export default function StudyDeck({ questions, title, onExit }: Props) {
       <QuestionCard
         question={question}
         selectedIndex={selected}
-        onSelect={revealed ? undefined : setSelected}
+        onSelect={revealed ? undefined : handleSelect}
         revealed={revealed}
         flagged={stat?.flagged ?? false}
         onToggleFlag={() => progressStore.toggleFlag(question.id)}
       />
 
-      {!revealed ? (
+      <div className="grid grid-cols-2 gap-3">
         <button
-          onClick={reveal}
-          className="rounded-xl bg-sky-600 py-3 font-semibold text-white transition-colors hover:bg-sky-500"
+          onClick={() => go(-1)}
+          disabled={index === 0}
+          className="rounded-xl border border-slate-700 py-3 font-semibold text-slate-200 disabled:opacity-40"
         >
-          {selected === null ? "Show answer" : "Check answer"}
+          ← Prev
         </button>
-      ) : (
-        <div className="grid grid-cols-2 gap-3">
-          <button
-            onClick={() => go(-1)}
-            disabled={index === 0}
-            className="rounded-xl border border-slate-700 py-3 font-semibold text-slate-200 disabled:opacity-40"
-          >
-            ← Prev
-          </button>
-          <button
-            onClick={() => go(1)}
-            disabled={index === questions.length - 1}
-            className="rounded-xl bg-sky-600 py-3 font-semibold text-white disabled:opacity-40"
-          >
-            Next →
-          </button>
-        </div>
-      )}
+        <button
+          onClick={() => go(1)}
+          disabled={index === questions.length - 1}
+          className="rounded-xl bg-sky-600 py-3 font-semibold text-white hover:bg-sky-500 disabled:opacity-40"
+        >
+          Next →
+        </button>
+      </div>
     </div>
   );
 }

@@ -1,7 +1,9 @@
+import { useMemo } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import StudyDeck from "../components/StudyDeck";
 import ProgressBar from "../components/ProgressBar";
-import { SYLLABUS, questionsForGroup, questionsForSubelement } from "../lib/data";
+import { QUESTIONS, SYLLABUS, questionsForGroup, questionsForSubelement } from "../lib/data";
+import { shuffle } from "../lib/random";
 import { useProgress } from "../lib/useProgress";
 import { pct } from "../lib/stats";
 import type { Question } from "../lib/types";
@@ -17,21 +19,43 @@ export default function StudyPage() {
   const navigate = useNavigate();
   const state = useProgress();
 
-  if (group) {
-    const questions = group.length === 2 ? questionsForSubelement(group) : questionsForGroup(group);
-    if (questions.length) {
-      return (
-        <StudyDeck questions={questions} title={group} onExit={() => navigate("/study")} />
-      );
-    }
+  // shuffle the selected deck; reshuffles whenever the selection changes
+  const deck = useMemo<Question[]>(() => {
+    if (!group) return [];
+    const base =
+      group === "all"
+        ? QUESTIONS
+        : group.length === 2
+          ? questionsForSubelement(group)
+          : questionsForGroup(group);
+    return shuffle(base);
+  }, [group]);
+
+  if (group && deck.length) {
+    const title = group === "all" ? "🔀 All questions" : group;
+    return <StudyDeck questions={deck} title={title} onExit={() => navigate("/study")} />;
   }
 
   return (
     <div className="flex flex-col gap-5">
       <header>
         <h1 className="text-2xl font-bold tracking-tight">Study</h1>
-        <p className="text-sm text-slate-400">Pick a subelement or drill a specific group.</p>
+        <p className="text-sm text-slate-400">
+          Shuffle the whole pool, or drill a specific subelement or group. Every deck is
+          randomized.
+        </p>
       </header>
+
+      <button
+        onClick={() => navigate("/study/all")}
+        className="flex items-center justify-between rounded-2xl border border-sky-700 bg-sky-500/10 p-5 text-left transition-colors hover:border-sky-500 hover:bg-sky-500/20"
+      >
+        <div>
+          <div className="text-lg font-semibold">🔀 Shuffle all questions</div>
+          <div className="text-xs text-slate-400">Random cards from the entire {QUESTIONS.length}-question pool</div>
+        </div>
+        <span className="text-2xl text-sky-400">→</span>
+      </button>
 
       <div className="flex flex-col gap-4">
         {SYLLABUS.map((sub) => {

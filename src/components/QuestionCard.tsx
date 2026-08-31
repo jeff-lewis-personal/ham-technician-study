@@ -1,4 +1,4 @@
-import { LETTERS, letterToIndex } from "../lib/data";
+import { LETTERS, letterToIndex, ecfrLink } from "../lib/data";
 import type { Question } from "../lib/types";
 
 interface Props {
@@ -120,14 +120,41 @@ export default function QuestionCard({
         })}
       </div>
 
-      {revealed && question.explanation && (
-        <div className="flex gap-2.5 border-t border-rule pt-3.5">
-          <span className="mt-0.5 font-mono text-[10px] uppercase tracking-[0.1em] text-moss">
-            Correct
-          </span>
-          <span className="text-[15px] leading-[1.45] text-body [text-wrap:pretty]">
-            {question.explanation}
-          </span>
+      {revealed && (
+        <div className="flex flex-col gap-2 border-t border-rule pt-3.5">
+          {selectedIndex !== null && (
+            <div
+              className={`text-[16px] font-medium ${
+                selectedIndex === correctIndex ? "text-moss" : "text-wrong"
+              }`}
+            >
+              {selectedIndex === correctIndex ? "Correct." : "Incorrect."}
+            </div>
+          )}
+          <div className="text-[14px] leading-[1.4] text-body">
+            <span className="text-ink">Correct answer:</span> {LETTERS[correctIndex]}.{" "}
+            {question.choices[correctIndex]}
+          </div>
+          {question.explanation && (
+            <div className="flex gap-2.5 pt-0.5">
+              <span className="mt-0.5 font-mono text-[10px] uppercase tracking-[0.12em] text-muted">
+                Why
+              </span>
+              <span className="text-[15px] leading-[1.45] text-body [text-wrap:pretty]">
+                {question.explanation}
+              </span>
+            </div>
+          )}
+          {ecfrLink(question.fccRef) && (
+            <a
+              href={ecfrLink(question.fccRef)!.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-0.5 self-start border-b border-[#d9bfb5] font-mono text-[11px] text-brick"
+            >
+              {ecfrLink(question.fccRef)!.label} on eCFR ↗
+            </a>
+          )}
         </div>
       )}
 

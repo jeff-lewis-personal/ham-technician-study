@@ -45,3 +45,15 @@ export function questionsForGroup(group: string): Question[] {
 export function subelementByCode(code: string): Subelement | undefined {
   return SYLLABUS.find((s) => s.code === code);
 }
+
+/** Deep link to the FCC Part 97 section on eCFR (public domain), from a fccRef. */
+export function ecfrLink(fccRef: string | null): { url: string; label: string } | null {
+  if (!fccRef) return null;
+  const m = fccRef.match(/(\d+)\.(\d+)/);
+  if (!m) return null;
+  const section = `${m[1]}.${m[2]}`;
+  return {
+    url: `https://www.ecfr.gov/current/title-47/section-${section}`,
+    label: `§${section}`,
+  };
+}

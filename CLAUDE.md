@@ -30,6 +30,17 @@ practice exams, scoring, and per-subelement mastery/coverage tracking.
 - Prefer source files < 300 lines, functions < 50 lines.
 - Generated files (questions.json, syllabus.json) are exempt from the line limit.
 
+## Deploy gotcha — npm lockfile
+This machine installs npm through the Databricks internal proxy
+(`npm-proxy.cloud.databricks.com`), which Vercel's build servers **cannot reach**.
+Every local `npm install` rewrites `package-lock.json` `resolved` URLs to that proxy,
+which makes Vercel hang on "Installing dependencies...". **Before pushing after any
+dependency change, sanitize the lockfile:**
+```bash
+sed -i '' 's#https://npm-proxy.cloud.databricks.com/#https://registry.npmjs.org/#g' package-lock.json
+```
+(The proxy is a 1:1 mirror of the public registry, so paths and integrity hashes are identical.)
+
 ## Roadmap (post-v1)
 - Spaced repetition (SRS), streaks, weak-area drilling
 - Optional backend for accounts + seeing testers' progress

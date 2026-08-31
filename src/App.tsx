@@ -1,4 +1,5 @@
 import { NavLink, Outlet } from "react-router-dom";
+import { Analytics } from "@vercel/analytics/react";
 
 const tabs = [
   { to: "/", label: "Home", icon: "🏠", end: true },
@@ -70,6 +71,7 @@ export default function App() {
           ))}
         </div>
       </nav>
+      <Analytics />
     </div>
   );
 }

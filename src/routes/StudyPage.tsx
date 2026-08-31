@@ -58,10 +58,12 @@ export default function StudyPage() {
   ];
 
   return (
-    <div className="flex flex-col gap-5">
-      <header>
-        <h1 className="text-2xl font-bold tracking-tight">Study</h1>
-        <p className="text-sm text-slate-400">
+    <div className="flex flex-col gap-4">
+      <header className="flex flex-col gap-1">
+        <h1 className="text-[28px] font-medium leading-[1.05] text-ink md:text-[34px] md:leading-[1.1]">
+          Study
+        </h1>
+        <p className="text-[15px] leading-[1.45] text-body [text-wrap:pretty] md:text-[17px]">
           Shuffle the whole pool, drill your weak spots, or pick a section. Every deck is
           randomized.
         </p>
@@ -70,85 +72,96 @@ export default function StudyPage() {
       <button
         onClick={() => navigate("/study/srs")}
         disabled={srsCount === 0}
-        className="flex items-center justify-between rounded-2xl border border-sky-600 bg-sky-500/15 p-5 text-left transition-colors hover:border-sky-400 hover:bg-sky-500/25 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:border-sky-600"
+        className="flex items-center justify-between border border-brick bg-brick-tint px-[18px] py-4 text-left transition-colors disabled:cursor-not-allowed disabled:opacity-50"
       >
-        <div>
-          <div className="text-lg font-semibold">🧠 Smart Review</div>
-          <div className="text-xs text-slate-400">
+        <div className="flex flex-col gap-0.5">
+          <div className="text-[19px] font-medium text-ink">🧠 Smart Review</div>
+          <div className="font-mono text-[10px] text-muted">
             {srsCount > 0
               ? `${srsCount} card${srsCount === 1 ? "" : "s"} due — spaced repetition`
               : "All caught up — check back later"}
           </div>
         </div>
-        <span className="text-2xl text-sky-400">→</span>
+        <span className="text-[20px] text-brick">→</span>
       </button>
 
       <button
         onClick={() => navigate("/study/all")}
-        className="flex items-center justify-between rounded-2xl border border-slate-800 bg-slate-900/50 p-5 text-left transition-colors hover:border-sky-700"
+        className="flex items-center justify-between border border-rule bg-card px-[18px] py-4 text-left transition-colors hover:border-brick"
       >
-        <div>
-          <div className="text-base font-semibold">🔀 Shuffle all questions</div>
-          <div className="text-xs text-slate-400">
-            Random cards from the entire {QUESTIONS.length}-question pool
+        <div className="flex flex-col gap-0.5">
+          <div className="text-[19px] font-medium text-ink">🔀 Shuffle all questions</div>
+          <div className="font-mono text-[10px] text-muted">
+            Random cards from all {QUESTIONS.length}
           </div>
         </div>
-        <span className="text-2xl text-slate-500">→</span>
+        <span className="text-[20px] text-brick">→</span>
       </button>
 
-      <section>
-        <h2 className="mb-2 text-sm font-semibold text-slate-300">Review &amp; drill</h2>
-        <div className="grid grid-cols-3 gap-2">
+      <section className="flex flex-col gap-2">
+        <h2 className="font-mono text-[10.5px] uppercase tracking-[0.12em] text-muted">
+          Review &amp; drill
+        </h2>
+        <div className="grid grid-cols-3 gap-3">
           {reviewBuckets.map((b) => (
             <button
               key={b.key}
               onClick={() => navigate(`/study/${b.key}`)}
               disabled={b.count === 0}
-              className="flex flex-col items-center gap-0.5 rounded-2xl border border-slate-800 bg-slate-900/50 p-4 transition-colors hover:border-sky-700 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:border-slate-800"
+              className="flex flex-col items-center gap-1 border border-rule bg-card p-4 transition-colors hover:border-brick disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:border-rule"
             >
-              <span className="text-xl">{b.icon}</span>
-              <span className="text-lg font-bold">{b.count}</span>
-              <span className="text-xs text-slate-400">{b.label}</span>
+              <span className="text-lg leading-none">{b.icon}</span>
+              <span className="text-[22px] font-medium leading-none text-ink">{b.count}</span>
+              <span className="font-mono text-[9.5px] uppercase tracking-[0.1em] text-muted">
+                {b.label}
+              </span>
             </button>
           ))}
         </div>
       </section>
 
-      <section className="flex flex-col gap-4">
-        <h2 className="text-sm font-semibold text-slate-300">By section</h2>
-        {SYLLABUS.map((sub) => {
-          const subQ = questionsForSubelement(sub.code);
-          return (
-            <div key={sub.code} className="rounded-2xl border border-slate-800 bg-slate-900/50 p-4">
-              <button
-                onClick={() => navigate(`/study/${sub.code}`)}
-                className="flex w-full items-center justify-between text-left"
+      <section className="flex flex-col gap-2">
+        <h2 className="font-mono text-[10.5px] uppercase tracking-[0.12em] text-muted">
+          By section
+        </h2>
+        <div className="grid grid-cols-1 gap-3 md:grid-cols-2 md:gap-[14px]">
+          {SYLLABUS.map((sub) => {
+            const subQ = questionsForSubelement(sub.code);
+            const cov = coverage(subQ, state);
+            return (
+              <div
+                key={sub.code}
+                className="flex flex-col gap-2.5 border border-rule bg-card p-[14px] transition-colors hover:border-brick md:p-[18px]"
               >
-                <div>
-                  <div className="font-semibold">
-                    <span className="font-mono text-sky-400">{sub.code}</span> {sub.name}
+                <button
+                  onClick={() => navigate(`/study/${sub.code}`)}
+                  className="flex w-full items-baseline justify-between gap-2 text-left"
+                >
+                  <div className="flex items-baseline gap-2">
+                    <span className="font-mono text-[12px] text-brick">{sub.code}</span>
+                    <span className="text-[17px] text-ink md:text-[19px]">{sub.name}</span>
                   </div>
-                  <div className="text-xs text-slate-400">{sub.questionCount} questions</div>
+                  <span className="whitespace-nowrap font-mono text-[10.5px] text-muted">
+                    <span className="hidden md:inline">{sub.questionCount} Q · </span>
+                    {pct(cov)}
+                  </span>
+                </button>
+                <ProgressBar value={cov} colorClass="bg-moss" />
+                <div className="flex flex-wrap gap-1.5">
+                  {sub.groupCodes.map((g) => (
+                    <button
+                      key={g}
+                      onClick={() => navigate(`/study/${g}`)}
+                      className="border border-rule px-[7px] py-[3px] font-mono text-[10.5px] text-body transition-colors hover:border-brick hover:text-brick"
+                    >
+                      {g}
+                    </button>
+                  ))}
                 </div>
-                <span className="text-xs text-slate-400">{pct(coverage(subQ, state))}</span>
-              </button>
-              <div className="mt-2">
-                <ProgressBar value={coverage(subQ, state)} colorClass="bg-emerald-500" />
               </div>
-              <div className="mt-3 flex flex-wrap gap-2">
-                {sub.groupCodes.map((g) => (
-                  <button
-                    key={g}
-                    onClick={() => navigate(`/study/${g}`)}
-                    className="rounded-lg border border-slate-700 px-2.5 py-1 font-mono text-xs text-slate-300 hover:border-sky-600 hover:text-sky-300"
-                  >
-                    {g}
-                  </button>
-                ))}
-              </div>
-            </div>
-          );
-        })}
+            );
+          })}
+        </div>
       </section>
     </div>
   );

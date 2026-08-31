@@ -2,13 +2,19 @@ interface Props {
   value: number; // 0..1
   className?: string;
   colorClass?: string;
+  heightClass?: string;
 }
 
-export default function ProgressBar({ value, className = "", colorClass = "bg-sky-500" }: Props) {
+export default function ProgressBar({
+  value,
+  className = "",
+  colorClass = "bg-brick",
+  heightClass = "h-[5px]",
+}: Props) {
   const width = `${Math.min(100, Math.max(0, value * 100))}%`;
   return (
-    <div className={`h-2 w-full overflow-hidden rounded-full bg-slate-800 ${className}`}>
-      <div className={`h-full rounded-full ${colorClass} transition-all`} style={{ width }} />
+    <div className={`${heightClass} w-full overflow-hidden bg-rule-soft ${className}`}>
+      <div className={`h-full ${colorClass} transition-[width]`} style={{ width }} />
     </div>
   );
 }

@@ -28,6 +28,9 @@ dist-ssr/
 # claude
 CLAUDE.local.md
 
+# design reference bundle (kept local, not part of the app)
+design_handoff_field_notebook/
+
 # logs
 npm-debug.log*
 yarn-debug.log*

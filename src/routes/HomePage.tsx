@@ -11,90 +11,118 @@ export default function HomePage() {
   const srsCount = srsAvailable(state);
 
   return (
-    <div className="flex flex-col gap-6">
-      <header>
-        <h1 className="text-2xl font-bold tracking-tight">Technician Study</h1>
-        <p className="text-sm text-slate-400">
-          FCC Amateur Radio Technician exam · pool valid 2026–2030
+    <div className="mx-auto flex w-full max-w-2xl flex-col gap-[18px]">
+      <header className="flex flex-col gap-1">
+        <h1 className="text-[30px] font-medium leading-[1.05] tracking-[-0.01em] text-ink md:text-[42px] md:tracking-[-0.015em]">
+          Technician Study
+        </h1>
+        <p className="font-mono text-[10.5px] uppercase tracking-[0.06em] text-muted">
+          FCC element 2 · pool 2026–2030
         </p>
       </header>
 
-      <section className="rounded-2xl border border-slate-800 bg-slate-900/50 p-5">
-        <div className="mb-1 flex items-baseline justify-between">
-          <span className="text-sm text-slate-400">Pool seen</span>
-          <span className="text-sm font-semibold text-slate-200">
-            {overall.seen}/{overall.total}
+      <section className="flex flex-col gap-[14px] border border-rule bg-card p-[18px] md:p-6">
+        <div className="flex items-baseline justify-between">
+          <span className="font-mono text-[10.5px] uppercase tracking-[0.12em] text-muted">
+            Pool seen
+          </span>
+          <span className="font-mono text-[13px] font-semibold text-ink">
+            {overall.seen} / {overall.total}
           </span>
         </div>
-        <ProgressBar value={overall.coverage} />
-        <div className="mt-4 grid grid-cols-2 gap-3 text-center">
-          <div className="rounded-xl bg-slate-800/60 p-3">
-            <div className="text-2xl font-bold text-sky-400">{pct(overall.coverage)}</div>
-            <div className="text-xs text-slate-400">covered</div>
+        <ProgressBar value={overall.coverage} heightClass="h-[6px]" colorClass="bg-brick" />
+        <div className="flex gap-px bg-rule">
+          <div className="flex flex-1 flex-col items-center gap-0.5 bg-paper p-3 md:p-4">
+            <div className="text-[30px] font-medium leading-none text-brick md:text-[36px]">
+              {pct(overall.coverage)}
+            </div>
+            <div className="font-mono text-[9.5px] uppercase tracking-[0.1em] text-muted">
+              covered
+            </div>
           </div>
-          <div className="rounded-xl bg-slate-800/60 p-3">
-            <div className="text-2xl font-bold text-emerald-400">
+          <div className="flex flex-1 flex-col items-center gap-0.5 bg-paper p-3 md:p-4">
+            <div className="text-[30px] font-medium leading-none text-moss md:text-[36px]">
               {overall.seen ? pct(overall.accuracy) : "—"}
             </div>
-            <div className="text-xs text-slate-400">accuracy</div>
+            <div className="font-mono text-[9.5px] uppercase tracking-[0.1em] text-muted">
+              accuracy
+            </div>
           </div>
+          {lastExam && (
+            <div className="hidden flex-1 flex-col items-center gap-0.5 bg-paper p-4 md:flex">
+              <div className="text-[36px] font-medium leading-none text-ink">
+                {lastExam.score}
+                <span className="text-[20px] text-muted">/{lastExam.total}</span>
+              </div>
+              <div className="font-mono text-[9.5px] uppercase tracking-[0.1em] text-muted">
+                last exam
+              </div>
+            </div>
+          )}
         </div>
       </section>
 
       {srsCount > 0 && (
         <Link
           to="/study/srs"
-          className="flex items-center justify-between rounded-2xl border border-sky-600 bg-sky-500/15 p-5 transition-colors hover:border-sky-400 hover:bg-sky-500/25"
+          className="flex items-center justify-between border border-brick bg-brick-tint p-4 transition-colors"
         >
-          <div>
-            <div className="text-lg font-semibold">🧠 Smart Review</div>
-            <div className="text-xs text-slate-400">
+          <div className="flex flex-col gap-0.5">
+            <div className="text-[19px] font-medium text-ink">🧠 Smart Review</div>
+            <div className="font-mono text-[10px] text-muted">
               {srsCount} card{srsCount === 1 ? "" : "s"} due for review
             </div>
           </div>
-          <span className="text-2xl text-sky-400">→</span>
+          <span className="text-[20px] text-brick">→</span>
         </Link>
       )}
 
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-2 gap-3 md:gap-4">
         <Link
           to="/study"
-          className="rounded-2xl border border-slate-800 bg-slate-900/50 p-5 transition-colors hover:border-sky-600"
+          className="flex flex-col gap-1 border border-rule bg-card p-4 transition-colors hover:border-brick md:p-5"
         >
-          <div className="mb-1 text-2xl">📖</div>
-          <div className="font-semibold">Study</div>
-          <div className="text-xs text-slate-400">Flashcards by section</div>
+          <div className="text-[22px] leading-none md:text-[24px]">📖</div>
+          <div className="text-[18px] font-medium text-ink md:text-[20px]">Study</div>
+          <div className="font-mono text-[10px] leading-[1.4] text-muted md:text-[10.5px]">
+            Flashcards by section
+          </div>
         </Link>
         <Link
           to="/practice"
-          className="rounded-2xl border border-slate-800 bg-slate-900/50 p-5 transition-colors hover:border-sky-600"
+          className="flex flex-col gap-1 border border-rule bg-card p-4 transition-colors hover:border-brick md:p-5"
         >
-          <div className="mb-1 text-2xl">📝</div>
-          <div className="font-semibold">Practice exam</div>
-          <div className="text-xs text-slate-400">35 questions · 26 to pass</div>
+          <div className="text-[22px] leading-none md:text-[24px]">📝</div>
+          <div className="text-[18px] font-medium text-ink md:text-[20px]">Practice exam</div>
+          <div className="font-mono text-[10px] leading-[1.4] text-muted md:text-[10.5px]">
+            35 questions · 26 to pass
+          </div>
         </Link>
       </div>
 
       {lastExam && (
-        <section className="rounded-2xl border border-slate-800 bg-slate-900/50 p-5">
-          <div className="mb-1 text-sm text-slate-400">Last practice exam</div>
-          <div className="flex items-baseline gap-2">
+        <section className="flex flex-col gap-2 border border-rule bg-card p-[18px]">
+          <div className="font-mono text-[10.5px] uppercase tracking-[0.12em] text-muted">
+            Last practice exam
+          </div>
+          <div className="flex items-baseline gap-2.5">
             <span
-              className={`text-3xl font-bold ${lastExam.passed ? "text-emerald-400" : "text-rose-400"}`}
+              className={`text-[38px] font-medium leading-none ${lastExam.passed ? "text-moss" : "text-wrong"}`}
             >
               {lastExam.score}/{lastExam.total}
             </span>
             <span
-              className={`rounded-md px-2 py-0.5 text-xs font-semibold ${
-                lastExam.passed
-                  ? "bg-emerald-500/15 text-emerald-300"
-                  : "bg-rose-500/15 text-rose-300"
+              className={`px-[7px] py-[3px] font-mono text-[10px] font-semibold tracking-[0.12em] text-paper ${
+                lastExam.passed ? "bg-moss" : "bg-wrong"
               }`}
             >
               {lastExam.passed ? "PASS" : "FAIL"}
             </span>
           </div>
-          <Link to="/progress" className="mt-2 inline-block text-xs text-sky-400">
+          <Link
+            to="/progress"
+            className="self-start border-b border-[#d9bfb5] text-[15px] text-brick"
+          >
             View all progress →
           </Link>
         </section>

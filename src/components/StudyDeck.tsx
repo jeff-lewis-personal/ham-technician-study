@@ -47,25 +47,25 @@ export default function StudyDeck({ questions, title, onExit }: Props) {
   }
 
   return (
-    <div className="flex flex-col gap-4">
-      <div className="flex items-center justify-between">
-        <button onClick={onExit} className="text-sm text-slate-400 hover:text-slate-200">
+    <div className="mx-auto flex w-full max-w-2xl flex-col gap-4">
+      <div className="flex items-center justify-between font-mono text-[11px]">
+        <button onClick={onExit} className="text-brick transition-colors hover:text-[#66280f]">
           ← Sections
         </button>
-        <span className="text-sm font-medium text-slate-300">{title}</span>
-        <span className="text-xs text-slate-500">
+        <span className="font-semibold tracking-[0.08em] text-ink">{title}</span>
+        <span className="text-muted">
           {index + 1}/{questions.length}
         </span>
       </div>
 
-      <div>
-        <div className="mb-1 flex justify-between text-xs text-slate-500">
+      <div className="flex flex-col gap-1.5">
+        <div className="flex justify-between font-mono text-[10px] uppercase tracking-[0.08em] text-muted">
           <span>Seen in this set</span>
           <span>
             {seenCount}/{questions.length}
           </span>
         </div>
-        <ProgressBar value={seenCount / questions.length} colorClass="bg-emerald-500" />
+        <ProgressBar value={seenCount / questions.length} colorClass="bg-moss" />
       </div>
 
       <QuestionCard
@@ -81,16 +81,16 @@ export default function StudyDeck({ questions, title, onExit }: Props) {
         <button
           onClick={() => go(-1)}
           disabled={index === 0}
-          className="rounded-xl border border-slate-700 py-3 font-semibold text-slate-200 disabled:opacity-40"
+          className="border border-rule py-3.5 text-center font-mono text-[12px] tracking-[0.08em] text-muted transition-colors disabled:opacity-40"
         >
-          ← Prev
+          ← PREV
         </button>
         <button
           onClick={() => go(1)}
           disabled={index === questions.length - 1}
-          className="rounded-xl bg-sky-600 py-3 font-semibold text-white hover:bg-sky-500 disabled:opacity-40"
+          className="border border-brick bg-brick py-3.5 text-center font-mono text-[12px] font-semibold tracking-[0.08em] text-paper transition-colors disabled:opacity-40"
         >
-          Next →
+          NEXT →
         </button>
       </div>
     </div>

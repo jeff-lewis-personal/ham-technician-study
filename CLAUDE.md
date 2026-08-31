@@ -12,6 +12,10 @@ practice exams, scoring, and per-subelement mastery/coverage tracking.
   passing is **26/35 (74%)**.
 - `scripts/parse_pool.py` regenerates `src/data/questions.json` + `syllabus.json` and
   applies the 4 page-1 errata. **Never hand-edit the JSON — re-run the parser.**
+- `scripts/gen_explanations.py` generates `src/data/explanations.json` (original 1–2 sentence
+  explanations, via the local `claude` CLI, grounded in FCC Part 97). Merged onto questions at
+  load. Resumable — re-run to fill gaps. **Do not derive explanations from copyrighted study
+  guides** (e.g. hambook.org is CC BY-NC-ND — NoDerivatives); Part 97 (eCFR) is public domain.
 
 ## Architecture
 - **Static SPA**: Vite + React + TypeScript + Tailwind. No backend in v1.

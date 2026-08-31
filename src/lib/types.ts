@@ -10,6 +10,7 @@ export interface Question {
   figure: string | null; // e.g. "T-1"
   question: string;
   choices: [string, string, string, string];
+  explanation?: string; // optional; merged from explanations.json
 }
 
 export interface Subelement {

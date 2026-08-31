@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import ProgressBar from "../components/ProgressBar";
 import { useProgress } from "../lib/useProgress";
-import { overallStats, pct } from "../lib/stats";
+import { overallStats, subelementStats, pct } from "../lib/stats";
 import { srsAvailable } from "../lib/srs";
 
 export default function HomePage() {
@@ -9,6 +9,10 @@ export default function HomePage() {
   const overall = overallStats(state);
   const lastExam = state.exams[0];
   const srsCount = srsAvailable(state);
+  const attempted = subelementStats(state).filter((s) => s.attempts > 0);
+  const weakest = attempted.length
+    ? attempted.reduce((a, b) => (b.accuracy < a.accuracy ? b : a))
+    : null;
 
   return (
     <div className="mx-auto flex w-full max-w-2xl flex-col gap-[18px]">
@@ -126,6 +130,19 @@ export default function HomePage() {
             View all progress →
           </Link>
         </section>
+      )}
+
+      {weakest && (
+        <Link to={`/study/${weakest.code}`} className="flex flex-col gap-2 border-t border-rule pt-3.5">
+          <span className="font-mono text-[10.5px] uppercase tracking-[0.12em] text-muted">
+            Weakest section
+          </span>
+          <span className="flex items-baseline gap-2">
+            <span className="font-mono text-[12px] text-brick">{weakest.code}</span>
+            <span className="text-[18px] text-ink">{weakest.name}</span>
+            <span className="ml-auto font-mono text-[11px] text-muted">{pct(weakest.accuracy)}</span>
+          </span>
+        </Link>
       )}
     </div>
   );

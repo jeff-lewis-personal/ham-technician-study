@@ -4,7 +4,13 @@ import StudyDeck from "../components/StudyDeck";
 import ProgressBar from "../components/ProgressBar";
 import { QUESTIONS, SYLLABUS, questionsForGroup, questionsForSubelement } from "../lib/data";
 import { shuffle } from "../lib/random";
-import { flaggedQuestions, missedQuestions, reviewDeck, unseenQuestions } from "../lib/review";
+import {
+  flaggedQuestions,
+  missedQuestions,
+  reviewDeck,
+  unseenQuestions,
+  weakQuestions,
+} from "../lib/review";
 import { buildSrsDeck, srsAvailable } from "../lib/srs";
 import { useProgress } from "../lib/useProgress";
 import { pct } from "../lib/stats";
@@ -16,6 +22,7 @@ const DECK_TITLES: Record<string, string> = {
   missed: "❌ Missed questions",
   flagged: "★ Flagged questions",
   unseen: "🆕 Unseen questions",
+  weak: "🎯 Weak areas",
 };
 
 function coverage(questions: Question[], state: ProgressState): number {
@@ -27,6 +34,7 @@ function coverage(questions: Question[], state: ProgressState): number {
 function buildDeck(group: string, state: ProgressState): Question[] {
   if (group === "srs") return buildSrsDeck(state);
   if (group === "all") return QUESTIONS;
+  if (group === "weak") return weakQuestions(state);
   if (group === "missed" || group === "flagged" || group === "unseen")
     return reviewDeck(group, state);
   if (group.length === 2) return questionsForSubelement(group);

@@ -1,8 +1,14 @@
 import questionsJson from "../data/questions.json";
 import syllabusJson from "../data/syllabus.json";
+import explanationsJson from "../data/explanations.json";
 import type { CorrectLetter, Question, Subelement } from "./types";
 
-export const QUESTIONS = questionsJson as Question[];
+const EXPLANATIONS = explanationsJson as Record<string, string>;
+
+export const QUESTIONS = (questionsJson as Question[]).map((q) => ({
+  ...q,
+  explanation: EXPLANATIONS[q.id],
+}));
 export const SYLLABUS = syllabusJson as Subelement[];
 
 export const LETTERS: CorrectLetter[] = ["A", "B", "C", "D"];

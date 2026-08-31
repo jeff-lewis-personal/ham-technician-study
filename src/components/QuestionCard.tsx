@@ -105,10 +105,31 @@ export default function QuestionCard({
                   <span className="ml-1 font-mono text-[10px] tracking-[0.08em]">— YOUR ANSWER</span>
                 )}
               </span>
+              {revealed && (s === "correct" || s === "wrong") && (
+                <span
+                  className={`ml-auto self-center pl-2 text-[19px] font-semibold leading-none ${
+                    s === "correct" ? "text-moss" : "text-wrong"
+                  }`}
+                  aria-label={s === "correct" ? "correct answer" : "your incorrect answer"}
+                >
+                  {s === "correct" ? "✓" : "✗"}
+                </span>
+              )}
             </button>
           );
         })}
       </div>
+
+      {revealed && question.explanation && (
+        <div className="flex gap-2.5 border-t border-rule pt-3.5">
+          <span className="mt-0.5 font-mono text-[10px] uppercase tracking-[0.1em] text-moss">
+            Correct
+          </span>
+          <span className="text-[15px] leading-[1.45] text-body [text-wrap:pretty]">
+            {question.explanation}
+          </span>
+        </div>
+      )}
 
       {footer}
     </div>

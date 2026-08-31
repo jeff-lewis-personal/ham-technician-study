@@ -3,7 +3,9 @@ import ProgressBar from "../components/ProgressBar";
 import { progressStore } from "../lib/progress";
 import { useProgress } from "../lib/useProgress";
 import { overallStats, subelementStats, pct } from "../lib/stats";
+import { weakSubelements, weakQuestions } from "../lib/review";
 import { subelementByCode } from "../lib/data";
+import type { SubelementStats } from "../lib/stats";
 
 function accColor(accuracy: number, attempts: number): string {
   if (attempts === 0) return "bg-rule-soft";
@@ -16,11 +18,19 @@ function resetAll() {
   if (confirm("Reset all study progress? This can't be undone.")) progressStore.reset();
 }
 
+function joinWithAnd(items: string[]): string {
+  if (items.length <= 1) return items.join("");
+  if (items.length === 2) return `${items[0]} and ${items[1]}`;
+  return `${items.slice(0, -1).join(", ")}, and ${items[items.length - 1]}`;
+}
+
 export default function ProgressPage() {
   const state = useProgress();
   const navigate = useNavigate();
   const overall = overallStats(state);
   const subs = subelementStats(state);
+  const weakSubs = weakSubelements(state);
+  const weakCount = weakQuestions(state).length;
 
   return (
     <div className="flex flex-col gap-5">
@@ -121,6 +131,9 @@ export default function ProgressPage() {
               ))}
             </div>
           )}
+          {weakSubs.length > 0 && (
+            <DrillWeakCard subs={weakSubs} count={weakCount} onDrill={() => navigate("/study/weak")} />
+          )}
           <button
             onClick={resetAll}
             className="self-start font-mono text-[10.5px] tracking-[0.08em] text-[#a09887] underline"
@@ -166,6 +179,9 @@ export default function ProgressPage() {
             ))}
           </section>
         )}
+        {weakSubs.length > 0 && (
+          <DrillWeakCard subs={weakSubs} count={weakCount} onDrill={() => navigate("/study/weak")} />
+        )}
         <button
           onClick={resetAll}
           className="self-start font-mono text-[10.5px] tracking-[0.08em] text-[#a09887] underline"
@@ -197,6 +213,37 @@ function Meter({
       <span className="w-[34px] text-right font-mono text-[10px] text-muted">
         {show ? pct(value) : "—"}
       </span>
+    </div>
+  );
+}
+
+function DrillWeakCard({
+  subs,
+  count,
+  onDrill,
+}: {
+  subs: SubelementStats[];
+  count: number;
+  onDrill: () => void;
+}) {
+  const sentence =
+    joinWithAnd(subs.map((s) => `${s.code} ${s.name}`)) +
+    (subs.length === 1 ? " is" : " are") +
+    " below the 74% pass line.";
+  return (
+    <div className="flex flex-col gap-2.5 border border-rule bg-card p-[18px] md:p-[22px]">
+      <div className="font-mono text-[10.5px] uppercase tracking-[0.12em] text-muted md:text-[11px]">
+        Drill your weak areas
+      </div>
+      <div className="text-[15px] leading-[1.45] text-body [text-wrap:pretty] md:text-[17px]">
+        {sentence}
+      </div>
+      <button
+        onClick={onDrill}
+        className="border border-brick bg-brick py-3 text-center font-mono text-[12px] font-semibold tracking-[0.08em] text-paper"
+      >
+        DRILL {count} WEAK QUESTION{count === 1 ? "" : "S"}
+      </button>
     </div>
   );
 }

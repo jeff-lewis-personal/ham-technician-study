@@ -1,5 +1,7 @@
-import { LETTERS, letterToIndex, ecfrLink } from "../lib/data";
+import { LETTERS, letterToIndex, ecfrLink, hambookLink } from "../lib/data";
 import type { Question } from "../lib/types";
+
+const LINK_CLASS = "self-start border-b border-[#d9bfb5] font-mono text-[11px] text-brick";
 
 interface Props {
   question: Question;
@@ -145,16 +147,28 @@ export default function QuestionCard({
               </span>
             </div>
           )}
-          {ecfrLink(question.fccRef) && (
-            <a
-              href={ecfrLink(question.fccRef)!.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-0.5 self-start border-b border-[#d9bfb5] font-mono text-[11px] text-brick"
-            >
-              {ecfrLink(question.fccRef)!.label} on eCFR ↗
-            </a>
-          )}
+          <div className="mt-0.5 flex flex-wrap gap-x-4 gap-y-1">
+            {ecfrLink(question.fccRef) && (
+              <a
+                href={ecfrLink(question.fccRef)!.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={LINK_CLASS}
+              >
+                {ecfrLink(question.fccRef)!.label} on eCFR ↗
+              </a>
+            )}
+            {hambookLink(question.subelement) && (
+              <a
+                href={hambookLink(question.subelement)!.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={LINK_CLASS}
+              >
+                HamBook: {hambookLink(question.subelement)!.title} ↗
+              </a>
+            )}
+          </div>
         </div>
       )}
 

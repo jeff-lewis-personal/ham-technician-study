@@ -57,3 +57,25 @@ export function ecfrLink(fccRef: string | null): { url: string; label: string } 
     label: `§${section}`,
   };
 }
+
+// Subelement -> the HamBook (hambook.org) chapter that covers it. Linking only;
+// HamBook is CC BY-NC-ND, so we link with attribution rather than reproduce text.
+const HAMBOOK_BASE = "https://hambook.org";
+const HAMBOOK_CHAPTERS: Record<string, { path: string; title: string }> = {
+  T0: { path: "/tech2026/pt2/chpt5/", title: "Safety" },
+  T1: { path: "/tech2026/pt2/chpt8/", title: "Rules & Regulations" },
+  T2: { path: "/tech2026/pt2/chpt7/", title: "Operating Practices" },
+  T3: { path: "/tech2026/pt1/chpt3/", title: "Radio Wave Principles" },
+  T4: { path: "/tech2026/pt2/chpt6/", title: "Station Setup" },
+  T5: { path: "/tech2026/pt1/chpt1/", title: "Electrical Principles" },
+  T6: { path: "/tech2026/pt1/chpt2/", title: "Electrical Components" },
+  T7: { path: "/tech2026/pt2/chpt6/", title: "Station Setup" },
+  T8: { path: "/tech2026/pt1/chpt3/", title: "Radio Wave Principles" },
+  T9: { path: "/tech2026/pt1/chpt4/", title: "Antennas" },
+};
+
+/** Further-reading link to the HamBook chapter covering this subelement. */
+export function hambookLink(subelement: string): { url: string; title: string } | null {
+  const c = HAMBOOK_CHAPTERS[subelement];
+  return c ? { url: HAMBOOK_BASE + c.path, title: c.title } : null;
+}

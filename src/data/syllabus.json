@@ -1,0 +1,127 @@
+[
+  {
+    "code": "T0",
+    "name": "Safety",
+    "examQuestions": 3,
+    "groups": 3,
+    "questionCount": 36,
+    "groupCodes": [
+      "T0A",
+      "T0B",
+      "T0C"
+    ]
+  },
+  {
+    "code": "T1",
+    "name": "Commission’s Rules",
+    "examQuestions": 6,
+    "groups": 6,
+    "questionCount": 68,
+    "groupCodes": [
+      "T1A",
+      "T1B",
+      "T1C",
+      "T1D",
+      "T1E",
+      "T1F"
+    ]
+  },
+  {
+    "code": "T2",
+    "name": "Operating Procedures",
+    "examQuestions": 3,
+    "groups": 3,
+    "questionCount": 37,
+    "groupCodes": [
+      "T2A",
+      "T2B",
+      "T2C"
+    ]
+  },
+  {
+    "code": "T3",
+    "name": "Radio Wave Propagation",
+    "examQuestions": 3,
+    "groups": 3,
+    "questionCount": 35,
+    "groupCodes": [
+      "T3A",
+      "T3B",
+      "T3C"
+    ]
+  },
+  {
+    "code": "T4",
+    "name": "Amateur Radio Practices",
+    "examQuestions": 2,
+    "groups": 2,
+    "questionCount": 23,
+    "groupCodes": [
+      "T4A",
+      "T4B"
+    ]
+  },
+  {
+    "code": "T5",
+    "name": "Electrical Principles",
+    "examQuestions": 4,
+    "groups": 4,
+    "questionCount": 50,
+    "groupCodes": [
+      "T5A",
+      "T5B",
+      "T5C",
+      "T5D"
+    ]
+  },
+  {
+    "code": "T6",
+    "name": "Electronic And Electrical Components",
+    "examQuestions": 4,
+    "groups": 4,
+    "questionCount": 46,
+    "groupCodes": [
+      "T6A",
+      "T6B",
+      "T6C",
+      "T6D"
+    ]
+  },
+  {
+    "code": "T7",
+    "name": "Practical Circuits",
+    "examQuestions": 4,
+    "groups": 4,
+    "questionCount": 44,
+    "groupCodes": [
+      "T7A",
+      "T7B",
+      "T7C",
+      "T7D"
+    ]
+  },
+  {
+    "code": "T8",
+    "name": "Signals And Emissions",
+    "examQuestions": 4,
+    "groups": 4,
+    "questionCount": 47,
+    "groupCodes": [
+      "T8A",
+      "T8B",
+      "T8C",
+      "T8D"
+    ]
+  },
+  {
+    "code": "T9",
+    "name": "Antennas And Feed Lines",
+    "examQuestions": 2,
+    "groups": 2,
+    "questionCount": 23,
+    "groupCodes": [
+      "T9A",
+      "T9B"
+    ]
+  }
+]

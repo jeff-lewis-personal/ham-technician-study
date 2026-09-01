@@ -41,3 +41,6 @@ pnpm-debug.log*
 __pycache__/
 *.pyc
 .venv/
+
+# local firebase config scratch (public keys, but no need to track)
+resources/firebase_config

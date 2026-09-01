@@ -23,6 +23,12 @@ practice exams, scoring, and per-subelement mastery/coverage tracking.
 - All progress reads/writes go through the `ProgressStore` interface
   (`src/lib/progress`) so a backend (accounts / cross-device sync) or a PWA
   offline layer can be added later without touching UI code.
+- **Accounts / cross-device sync (optional):** Firebase Auth (Google) + Firestore.
+  Offline-first — `localStorage` stays the working copy; `src/lib/sync.ts` merges
+  (union, never lose progress) on sign-in and debounce-pushes changes. All gated by
+  `firebaseEnabled` (`src/lib/firebase.ts`): with no `VITE_FIREBASE_*` env vars the
+  app runs fully local and sign-in is hidden. Firestore rules in `firestore.rules`
+  (per-user doc, `progress/{uid}`). Firebase config values are public by design.
 - Hosting: **Vercel** (static build). Repo: github.com/jeff-lewis-personal.
 
 ## Data contract

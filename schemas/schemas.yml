@@ -74,3 +74,15 @@ localStorage:
         score:   "int   number correct out of total"
         total:   "int   number of questions (35)"
         passed:  "bool  score/total >= 0.74"
+
+# ---------------------------------------------------------------------------
+# Firestore (optional cross-device sync) — collection `progress`, one doc per user
+# Doc id = Firebase Auth uid. Access restricted to the owner (firestore.rules).
+# ---------------------------------------------------------------------------
+firestore_progress:
+  path: "progress/{uid}"
+  shape:
+    questions: "same map as localStorage.questions above"
+    exams:     "same array as localStorage.exams above"
+    updatedAt: "int   epoch ms of last server write"
+  note: "Mirror of the localStorage ProgressState blob; merged with local on sign-in."

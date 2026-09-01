@@ -25,6 +25,7 @@ export interface ProgressStore {
   toggleFlag(questionId: string): void;
   recordExam(result: ExamResult): void;
   reset(): void;
+  replaceState(state: ProgressState): void;
   subscribe(listener: () => void): () => void;
 }
 
@@ -99,6 +100,11 @@ export class LocalProgressStore implements ProgressStore {
 
   reset(): void {
     this.state = emptyState();
+    this.persist();
+  }
+
+  replaceState(state: ProgressState): void {
+    this.state = { questions: state.questions ?? {}, exams: state.exams ?? [] };
     this.persist();
   }
 

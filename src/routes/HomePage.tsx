@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import ProgressBar from "../components/ProgressBar";
+import AccountCard from "../components/AccountCard";
 import { useProgress } from "../lib/useProgress";
 import { overallStats, subelementStats, pct } from "../lib/stats";
 import { srsAvailable } from "../lib/srs";
@@ -24,6 +25,8 @@ export default function HomePage() {
           FCC element 2 · pool 2026–2030
         </p>
       </header>
+
+      <AccountCard />
 
       <section className="flex flex-col gap-[14px] border border-rule bg-card p-[18px] md:p-6">
         <div className="flex items-baseline justify-between">
